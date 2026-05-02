@@ -1,0 +1,11 @@
+[package]
+name = "sentinel-core"
+version = "0.1.0"
+edition = "2021"
+description = "VQ-Capital Pure HFT Logic & Quant Engine"
+license = "AGPL-3.0"
+
+[dependencies]
+ndarray = "0.15"       # Saf Rust matris ve yapay zeka işlemleri
+thiserror = "1.0"      # Temiz hata yönetimi
+tracing = "0.1"        # Loglama
