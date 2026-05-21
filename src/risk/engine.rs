@@ -1,4 +1,5 @@
 // ========== DOSYA: sentinel-core/src/risk/engine.rs ==========
+use crate::dna;
 use crate::types::{format_precision, get_symbol_rules, Position, SignalType, TradeSignal};
 use std::collections::HashMap;
 
@@ -16,8 +17,30 @@ pub struct RiskConfig {
     pub stop_loss_pct: f64,
 }
 
+impl RiskConfig {
+    // 🧬 SİSTEMİN YENİ KALBİ: Doğrudan DNA'yı kullanır
+    pub fn new_baked(
+        initial_balance: f64,
+        max_drawdown_pct: f64,
+        defensive_drawdown_pct: f64,
+    ) -> Self {
+        Self {
+            initial_balance,
+            max_drawdown_usd: initial_balance * max_drawdown_pct,
+            defensive_drawdown_usd: initial_balance * defensive_drawdown_pct,
+            cooldown_ms: dna::COOLDOWN_MS,
+            min_hold_time_ms: 100,
+            max_hold_time_ms: 3_600_000,
+            base_risk_pct: dna::RISK_PCT,
+            base_leverage: 1.0,
+            take_profit_pct: dna::TAKE_PROFIT_PCT,
+            stop_loss_pct: dna::STOP_LOSS_PCT,
+        }
+    }
+}
+
 pub struct RiskEngine {
-    config: RiskConfig,
+    pub config: RiskConfig,
     pub positions: HashMap<String, Position>,
     pub last_trade_time: HashMap<String, i64>,
     pub kill_switch_active: bool,
@@ -168,7 +191,6 @@ impl RiskEngine {
         orders
     }
 
-    // İşlem gerçekleştiğinde portföyü güncelle
     pub fn process_execution(
         &mut self,
         symbol: &str,

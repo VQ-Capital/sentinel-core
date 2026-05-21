@@ -1,4 +1,5 @@
 // ========== DOSYA: sentinel-core/src/math/model.rs ==========
+use crate::dna;
 use crate::types::SignalType;
 use ndarray::{Array1, Array2};
 use thiserror::Error;
@@ -19,6 +20,16 @@ pub struct PureMathModel {
 }
 
 impl PureMathModel {
+    // 🧬 SİSTEMİN YENİ KALBİ: Doğrudan DNA'yı kullanır
+    pub fn new_baked() -> Result<Self, ModelError> {
+        Self::new(
+            dna::W1.to_vec(),
+            dna::B1.to_vec(),
+            dna::W2.to_vec(),
+            dna::B2.to_vec(),
+        )
+    }
+
     pub fn new(
         w1_data: Vec<f32>,
         b1_data: Vec<f32>,
@@ -35,7 +46,7 @@ impl PureMathModel {
     pub fn predict(&self, features: &[f32; 12]) -> Result<(SignalType, f64), ModelError> {
         let input = Array1::from_vec(features.to_vec());
 
-        // 🔥 CERRAHİ: Hidden Layer (X * W1 + B1) -> Non-Linear ReLU Aktivasyonu
+        // Hidden Layer (X * W1 + B1) -> Non-Linear ReLU
         let mut hidden = input.dot(&self.w1) + &self.b1;
         hidden.mapv_inplace(|x| x.max(0.0));
 
