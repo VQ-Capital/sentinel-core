@@ -57,13 +57,13 @@ pub const B2: &[f32] = &[
     0.41717634, -0.26197225, -0.2679354,
 ];
 
-// 🛡️ RISK & EXECUTION PARAMETERS (Evrimleşen Limitler)
+// 🛡️ RISK & EXECUTION PARAMETERS
 pub const TAKE_PROFIT_PCT: f64 = 0.007935125;
 pub const STOP_LOSS_PCT: f64 = 0.0042156274;
 pub const COOLDOWN_MS: i64 = 4708;
 pub const RISK_PCT: f64 = 0.014719027;
 pub const MIN_CONFIDENCE: f64 = 0.38918018;
 
-// 🏦 MARKET PHYSICS (Sabit Kural)
+// 🏦 MARKET PHYSICS
 pub const FEE_RATE: f64 = 0.0002;
 pub const BASE_SLIPPAGE_PCT: f64 = 0.00005;
