@@ -20,7 +20,6 @@ pub struct PureMathModel {
 }
 
 impl PureMathModel {
-    // 🧬 SİSTEMİN YENİ KALBİ: Doğrudan DNA'yı kullanır
     pub fn new_baked() -> Result<Self, ModelError> {
         Self::new(
             dna::W1.to_vec(),
@@ -46,14 +45,12 @@ impl PureMathModel {
     pub fn predict(&self, features: &[f32; 12]) -> Result<(SignalType, f64), ModelError> {
         let input = Array1::from_vec(features.to_vec());
 
-        // Hidden Layer (X * W1 + B1) -> Non-Linear ReLU
+        // 🔥 CERRAHİ: ReLU yerine Leaky ReLU kullanıyoruz (Dying ReLU sendromunu çözer)
         let mut hidden = input.dot(&self.w1) + &self.b1;
-        hidden.mapv_inplace(|x| x.max(0.0));
+        hidden.mapv_inplace(|x| if x > 0.0 { x } else { x * 0.01 });
 
-        // Output Layer (Hidden * W2 + B2)
         let logits = hidden.dot(&self.w2) + &self.b2;
 
-        // Softmax
         let max_logit = logits.iter().cloned().fold(f32::NEG_INFINITY, f32::max);
         let exp_logits = logits.mapv(|x| (x - max_logit).exp());
         let sum_exp = exp_logits.sum();
