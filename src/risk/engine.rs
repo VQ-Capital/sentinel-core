@@ -18,7 +18,6 @@ pub struct RiskConfig {
 }
 
 impl RiskConfig {
-    // 🧬 SİSTEMİN YENİ KALBİ: Doğrudan DNA'yı kullanır
     pub fn new_baked(
         initial_balance: f64,
         max_drawdown_pct: f64,
@@ -30,9 +29,9 @@ impl RiskConfig {
             defensive_drawdown_usd: initial_balance * defensive_drawdown_pct,
             cooldown_ms: dna::COOLDOWN_MS,
             min_hold_time_ms: 100,
-            max_hold_time_ms: 3_600_000,
+            max_hold_time_ms: dna::MAX_HOLD_TIME_MS, // 🔥 DNA'DAN GELİYOR
             base_risk_pct: dna::RISK_PCT,
-            base_leverage: 1.0,
+            base_leverage: dna::LEVERAGE, // 🔥 DNA'DAN GELİYOR
             take_profit_pct: dna::TAKE_PROFIT_PCT,
             stop_loss_pct: dna::STOP_LOSS_PCT,
         }
@@ -117,7 +116,6 @@ impl RiskEngine {
         } else {
             self.config.base_risk_pct
         };
-
         let active_leverage = if self.is_defensive_mode {
             self.config.base_leverage * 0.5
         } else {
@@ -215,7 +213,6 @@ impl RiskEngine {
             } else {
                 pos.quantity + close_qty
             };
-
             if pos.quantity.abs() < 1e-6 {
                 pos.avg_price = 0.0;
             }
